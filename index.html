@@ -5,10 +5,50 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOLReplay</title>
+    <link href="lolreplay.css" rel="stylesheet" />
+    <style>
+        #main {
+            border: black solid 1px;
+            width: 1200px;
+        }
+    </style>
 </head>
 <body>
-    <div id="main"></div>
+    <h1>LolReplay</h1>
+    <p>this is some text</p>
+    <div id="main" class="lol-replay"></div>
 </body>
 
 <script src="lolreplay.js"></script>
+<script>
+    const replayOptions = {
+      backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+      height: 500
+    }
+
+    const replayData = {
+      champions: [{
+        name: "Lee Sin",
+        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/LeeSin.png",
+        player: "Zurita",
+        team: 0
+      }, {
+        name: "Yasuo",
+        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
+        player: "ShadowTraveler",
+        tagline: "even worse, somehow",
+        team: 0
+      }],
+      keyframes: [{
+        0: [3, 10],
+        1: [8, 8]
+      }, {
+        0: [1, 0],
+        1: [2, 2]
+      }]
+    }
+
+    const replay = new LOLReplay("#main", replayData, replayOptions);
+    replay.initialize();
+</script>
 </html>
