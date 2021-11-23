@@ -8,7 +8,7 @@
     <link href="lolreplay.css" rel="stylesheet" />
     <style>
         #main {
-            border: black solid 1px;
+            /*border: black solid 1px;*/
             width: 1200px;
         }
     </style>
@@ -23,7 +23,7 @@
 <script>
     const replayOptions = {
       backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
-      height: 500
+      height: 410
     }
 
     const replayData = {
@@ -36,15 +36,20 @@
         name: "Yasuo",
         img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
         player: "ShadowTraveler",
-        tagline: "even worse, somehow",
         team: 0
+      }, {
+        name: "Yasuo",
+        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
+        player: "ShadowTraveler2",
+        team: 1
       }],
       keyframes: [{
-        0: [3, 10],
-        1: [8, 8]
+        0: {pos: [5, 15]},
+        1: {pos: [11.5, 12]},
+        2: {pos: [25.5, 25.75]}
       }, {
-        0: [1, 0],
-        1: [2, 2]
+        0: {pos: [1, 0]},
+        1: {pos: [2, 2]}
       }]
     }
 
