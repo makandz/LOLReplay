@@ -26,6 +26,33 @@
       height: 410
     }
 
+    // const replayData = {
+    //   champions: [{
+    //     name: "Lee Sin",
+    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/LeeSin.png",
+    //     player: "Zurita",
+    //     team: 0
+    //   }, {
+    //     name: "Yasuo",
+    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
+    //     player: "ShadowTraveler",
+    //     team: 0
+    //   }, {
+    //     name: "Yasuo",
+    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
+    //     player: "ShadowTraveler2",
+    //     team: 1
+    //   }],
+    //   keyframes: [{
+    //     0: {pos: [5, 15], gold: 102},
+    //     1: {pos: [11.5, 12]},
+    //     2: {pos: [25.5, 25.75]}
+    //   }, {
+    //     0: {pos: [1, 0]},
+    //     1: {pos: [2, 2]}
+    //   }]
+    // }
+
     const replayData = {
       champions: [{
         name: "Lee Sin",
@@ -38,22 +65,28 @@
         player: "ShadowTraveler",
         team: 0
       }, {
-        name: "Yasuo",
-        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
-        player: "ShadowTraveler2",
+        name: "Garen",
+        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Garen.png",
+        player: "Xander0927",
         team: 1
       }],
-      keyframes: [{
-        0: {pos: [5, 15], gold: 102},
-        1: {pos: [11.5, 12]},
-        2: {pos: [25.5, 25.75]}
+
+      frames: [{
+        0: {pos: [5, 15], gold: 0, score: [0, 0, 0]},
+        1: {pos: [11.5, 12], gold: 120, score: [0, 0, 0]},
+        2: {pos: [25.5, 25.75], gold: 20, score: [0, 0, 0]}
       }, {
         0: {pos: [1, 0]},
         1: {pos: [2, 2]}
       }]
     }
 
-    const replay = new LOLReplay("#main", replayData, replayOptions);
+    const replay = new LOLReplay(
+      document.querySelector("#main"),
+      replayData,
+      replayOptions
+    );
+
     replay.initialize();
 </script>
 </html>

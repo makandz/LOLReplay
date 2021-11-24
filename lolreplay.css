@@ -1,6 +1,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
-/* lr-map */
+/* -- lr-replay -- */
+.lol-replay {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+
+.lol-replay .break {
+    flex-basis: 100%;
+    height: 0;
+}
+
+.lol-replay > * {
+    font-family: "Roboto", sans-serif;
+}
+
+.lol-replay h1 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 2rem;
+}
+
+.lol-replay h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+/* -- lr-map -- */
+/* base map */
 .lol-replay #lr_map {
     position: relative;
+}
+
+.lol-replay #lr_map .lr-background {
+    border-radius: 20px;
+}
+
+/* map champions */
+.lol-replay .lr-map-champion {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 50%;
+    border: white solid 3px;
+}
+
+.lol-replay .lr-map-champion.team0 {
+    border: lightskyblue solid 3px;
+}
+
+.lol-replay .lr-map-champion.team1 {
+    border: lightcoral solid 3px;
+}
+
+/* -- lr-score -- */
+.lol-replay #lr_score {
+    padding-left: 12px;
+}
+
+/* player scores */
+.lol-replay #lr_score #lr_score_players div h2.team0 {
+    color: #0062d0;
+}
+
+.lol-replay #lr_score #lr_score_players div h2.team1 {
+    color: #d00000;
+}
+
+/* -- lr-slider -- */
+.lol-replay #lr_slider {
+    display: flex;
+    gap: 10px;
+}
+
+.lol-replay #lr_slider .lr-slider-main input {
+    width: 250px;
 }
