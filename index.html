@@ -6,87 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOLReplay</title>
     <link href="lolreplay.css" rel="stylesheet" />
-    <style>
-        #main {
-            /*border: black solid 1px;*/
-            width: 1200px;
-        }
-    </style>
+    <link href="example.css" rel="stylesheet" />
 </head>
 <body>
-    <h1>LolReplay</h1>
-    <p>this is some text</p>
-    <div id="main" class="lol-replay"></div>
+
+<h1>LolReplay - Examples</h1>
+<h2>Component</h2>
+<p>Below is what the LOLReplay component looks like. There is only one version of it, but it can be customized with it's
+own size and attributes.</p>
+<p>The component below has been created with simulated game data. (a 2v2 custom game)</p>
+<div id="main" class="lol-replay"></div>
+
+<h2>Options</h2>
+<p>The map size can be increased or decreased, the elements will automatically scale.</p>
+<button onclick="smallSize()">Small map</button>
+<button onclick="largeSize()">Large map (default)</button>
+<div class="spacing"></div>
+<p>The map background can be changed as well.</p>
+<button onclick="defaultMap()">Flat (default)</button>
+<button onclick="customMap()">Custom</button>
+
 </body>
 
 <script src="lolreplay.js"></script>
-<script>
-    const replayOptions = {
-      backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
-      height: 410
-    }
-
-    // const replayData = {
-    //   champions: [{
-    //     name: "Lee Sin",
-    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/LeeSin.png",
-    //     player: "Zurita",
-    //     team: 0
-    //   }, {
-    //     name: "Yasuo",
-    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
-    //     player: "ShadowTraveler",
-    //     team: 0
-    //   }, {
-    //     name: "Yasuo",
-    //     img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
-    //     player: "ShadowTraveler2",
-    //     team: 1
-    //   }],
-    //   keyframes: [{
-    //     0: {pos: [5, 15], gold: 102},
-    //     1: {pos: [11.5, 12]},
-    //     2: {pos: [25.5, 25.75]}
-    //   }, {
-    //     0: {pos: [1, 0]},
-    //     1: {pos: [2, 2]}
-    //   }]
-    // }
-
-    const replayData = {
-      champions: [{
-        name: "Lee Sin",
-        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/LeeSin.png",
-        player: "Zurita",
-        team: 0
-      }, {
-        name: "Yasuo",
-        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Yasuo.png",
-        player: "ShadowTraveler",
-        team: 0
-      }, {
-        name: "Garen",
-        img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Garen.png",
-        player: "Xander0927",
-        team: 1
-      }],
-
-      frames: [{
-        0: {pos: [5, 15], gold: 0, score: [0, 0, 0]},
-        1: {pos: [11.5, 12], gold: 120, score: [0, 0, 0]},
-        2: {pos: [25.5, 25.75], gold: 20, score: [0, 0, 0]}
-      }, {
-        0: {pos: [1, 0]},
-        1: {pos: [2, 2]}
-      }]
-    }
-
-    const replay = new LOLReplay(
-      document.querySelector("#main"),
-      replayData,
-      replayOptions
-    );
-
-    replay.initialize();
-</script>
+<script src="example.js"></script>
 </html>

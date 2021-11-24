@@ -6,10 +6,8 @@
  * @param backgroundImage The background image of choice.
  */
 function LRMap(height, backgroundImage) {
-  // private attributes
   this.mapDom = null;
 
-  // public attributes
   this.height = height;
   this.backgroundImage = backgroundImage;
 }
