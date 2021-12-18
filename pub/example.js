@@ -1,5 +1,5 @@
 // Global options
-let size = 350;
+let size = 400;
 backgroundImage = "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png";
 
 // main generate call
@@ -31,6 +31,9 @@ function generate() {
       }],
 
       frames: [{
+        obj: {
+          spawnTurrets: [...Array(22).keys()]
+        },
         0: {pos: [0, 0], gold: 0, score: [0, 0, 0]},
         1: {pos: [0, 0], gold: 0, score: [0, 0, 0]},
         2: {pos: [25.5, 25.5], gold: 0, score: [0, 0, 0]},
@@ -105,7 +108,9 @@ function generate() {
 
     {
       backgroundImage:  backgroundImage,
-      height: size
+      height: size,
+      turretImage: "https://i.imgur.com/WdQx48B.png",
+      // turrets: [...]
     }
 
   );

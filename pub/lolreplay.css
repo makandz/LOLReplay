@@ -38,6 +38,21 @@
     border-radius: 20px;
 }
 
+/* map turrets */
+.lol-replay .lr-map-turret {
+    position: absolute;
+}
+
+.lol-replay .lr-map-turret.team0 {
+    filter: invert(16%) sepia(93%) saturate(7125%) hue-rotate(343deg) brightness(91%) contrast(89%);
+}
+
+.lol-replay .lr-map-turret.team1 {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: invert(17%) sepia(97%) saturate(2303%) hue-rotate(207deg) brightness(93%) contrast(102%);
+}
+
 /* map champions */
 .lol-replay .lr-map-champion {
     position: absolute;
@@ -61,6 +76,10 @@
 }
 
 /* player scores */
+.lol-replay #lr_score #lr_score_players {
+    margin-bottom: 15px;
+}
+
 .lol-replay #lr_score #lr_score_players div h2.team0 {
     color: #0062d0;
 }
