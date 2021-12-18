@@ -7,6 +7,7 @@ class LRMap {
    * @param height The height of the map, width will match.
    * @param backgroundImage The background image of choice.
    * @param turretImage Image for turrets
+   * @param turrets Turrets override data object
    */
   constructor(height, backgroundImage, turretImage, turrets) {
     this.mapDom = null;
@@ -40,11 +41,26 @@ class LRMap {
     this.mapDom = document.createElement("div");
     this.mapDom.id = "lr_map";
     this.mapDom.innerHTML = `
+      <!-- map -->
       <img
         src="${this.backgroundImage}"
         class="lr-background"
         alt="LOLReplay map"
         style="height: ${this.height}px; width: ${this.height}px;"
+      />
+      <!-- dragon -->
+      <img
+        id="lr_map_dragon"
+        alt="dragon"
+        width="${Math.round(this.height / 14)}"
+        style="left: ${17.75 * (this.height / 28)}px; bottom: ${7.25 * (this.height / 28)}px; visibility: hidden;"
+      />
+      <!-- pit -->
+      <img
+        id="lr_map_pit"
+        alt="rift pit"
+        width="${Math.round(this.height / 14)}"
+        style="left: ${8 * (this.height / 28)}px; bottom: ${18.5 * (this.height / 28)}px; visibility: hidden;"
       />
     `;
 
@@ -101,11 +117,45 @@ class LRMap {
     championDom.style.bottom = `${newY * (this.height / 28)}px`;
   }
 
+  /**
+   * Updates the turrets views based on an inputted array of visible IDs.
+   * @param turrets List of turret IDs that are visible to the user
+   */
   updateTurretDisplay(turrets) {
     [...Array(this.renderedTurrets).keys()].forEach((turretIndex) => {
       document.querySelector(`.lr-map-turret[data-id="${turretIndex}"]`).style.visibility =
         turrets.includes(turretIndex) ? "visible" : "hidden";
     });
+  }
+
+  /**
+   * Updates the current dragon shown on the map
+   * @param dragon The dragon to be shown, null for none
+   * @param dragonImages List of all dragon images, it'll index this based on name
+   */
+  updateDragonDisplay(dragon, dragonImages) {
+    const dragonDom = document.querySelector(`#lr_map_dragon`);
+    if (dragon === null) {
+      dragonDom.style.visibility = "hidden";
+    } else {
+      dragonDom.src = dragonImages[dragon];
+      dragonDom.style.visibility = "visible";
+    }
+  }
+
+  /**
+   * Updates the current rift pit shown on the map
+   * @param pit The monster to appear within the pit
+   * @param pitImages List of all pit images, it'll index this based on name
+   */
+  updatePitDisplay(pit, pitImages) {
+    const pitDom = document.querySelector(`#lr_map_pit`);
+    if (pit === null) {
+      pitDom.style.visibility = "hidden";
+    } else {
+      pitDom.src = pitImages[pit];
+      pitDom.style.visibility = "visible";
+    }
   }
 }
 
@@ -167,7 +217,9 @@ class LRScoreboard {
       <div id="lr_score_players"></div>
       
       <h1>Objectives</h1>
-      <p>none</p>
+      <h2 id="lr_score_rift"></h2>
+      <h2 id="lr_score_dragon"></h2>
+      <p id="lr_score_noobj">No objectives on the map</p>
     `;
 
     this.playerScoreDom = this.scoreDom.querySelector("#lr_score_players");
@@ -213,6 +265,35 @@ class LRScoreboard {
     let scoreDom = document.querySelector(`[data-id="${championId}"] .score`);
     scoreDom.innerText = kda.join("/");
   }
+
+  updateObjectives(dragon, rift) {
+    const noObjectiveDom = document.querySelector("#lr_score_noobj");
+    const riftDom = document.querySelector("#lr_score_rift");
+    const dragonDom = document.querySelector("#lr_score_dragon");
+
+    // hide by default
+    dragonDom.style.display = "none";
+    riftDom.style.display = "none";
+
+    // figure out which needs to show
+    if (dragon === null && rift === null) {
+      noObjectiveDom.style.display = "block";
+    } else {
+      noObjectiveDom.style.display = "none";
+
+      // dragon pit
+      if (dragon !== null) {
+        dragonDom.innerText = `${dragon} Drake (~> Dragon Pit)`;
+        dragonDom.style.display = "block";
+      }
+
+      // Rift pit
+      if (rift !== null) {
+        riftDom.innerText = `${rift} (~> Rift Pit)`;
+        riftDom.style.display = "block";
+      }
+    }
+  }
 }
 
 class LRSlider {
@@ -228,6 +309,12 @@ class LRSlider {
     this.frameCounterDom = null;
     this.sliderMainDom = null;
     this.playButtonDom = null;
+    this.previousButtonDom = null;
+    this.nextButtonDom = null;
+    this.slowButtonDom = null;
+    this.fastButtonDom = null;
+
+    this.replaySpeed = 1;
   }
 
   /**
@@ -245,7 +332,11 @@ class LRSlider {
         <input type="range" min="0" max="${this.LOLReplayObject.data.frames.length - 1}" value="0" />
       </div>
       <div class="lr-slider-controls">
-        <input type="button" value="Start" />
+        <input type="button" value="-" id="lr_slider_slow" title="Decrease play speed" />
+        <input type="button" value="<<" id="lr_slider_previous" title="Previous frame" />
+        <input type="button" value="Start (x1)" id="lr_slider_play" title="Start/Stop toggle" />
+        <input type="button" value=">>" id="lr_slider_next" title="Next frame" />
+        <input type="button" value="+" id="lr_slider_fast" title="Increase play speed" />
       </div>
     `;
 
@@ -256,7 +347,11 @@ class LRSlider {
     this.sliderDom = sliderDom;
     this.frameCounterDom = this.sliderDom.querySelector(".lr-slider-frame span.frame");
     this.sliderMainDom = this.sliderDom.querySelector(".lr-slider-main input");
-    this.playButtonDom = this.sliderDom.querySelector(".lr-slider-controls input:first-child");
+    this.playButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_play");
+    this.previousButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_previous");
+    this.nextButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_next");
+    this.slowButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_slow");
+    this.fastButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_fast");
     container.append(sliderDom);
 
     // adding change event handler for slider
@@ -270,8 +365,28 @@ class LRSlider {
    */
   onFrameChange(event) {
     let frameIndex = parseInt(event.target.value);
-    this.frameCounterDom.innerText = frameIndex;
     this.LOLReplayObject.viewFrame(frameIndex);
+  }
+
+  onFrameUpdate() {
+    const currentFrame = this.LOLReplayObject.frame;
+    this.frameCounterDom.innerText = currentFrame;
+    this.sliderMainDom.value = currentFrame;
+
+    // buttons disabled if the video player is playing
+    this.previousButtonDom.disabled = this.playInterval !== null;
+    this.nextButtonDom.disabled = this.playInterval !== null;
+    this.slowButtonDom.disabled = this.playInterval !== null;
+    this.fastButtonDom.disabled = this.playInterval !== null;
+
+    if (this.playInterval !== null) return; // don't continue if playing
+
+    // First frame disable button
+    if (currentFrame <= 0) {
+      this.previousButtonDom.disabled = true;
+    } else if (currentFrame >= this.LOLReplayObject.data.frames.length - 1) { // last frame disable next
+      this.nextButtonDom.disabled = true;
+    }
   }
 
   /**
@@ -279,23 +394,31 @@ class LRSlider {
    */
   onStartToggle() {
     if (this.playInterval !== null) {
-      // There is no play interval, end.
-      this.playButtonDom.value = "Start";
+      this.playButtonDom.value = `Start (x${this.replaySpeed})`;
       clearInterval(this.playInterval);
-      this.playInterval = null;
     } else {
-      this.playButtonDom.value = "Stop";
-      // This will create an interval that will clear itself once at the end
+      this.playButtonDom.value = `Stop (x${this.replaySpeed})`;
       this.playInterval = setInterval(() => {
-        // Set the various views and update counts
-        this.frameCounterDom.innerText = this.LOLReplayObject.frame + 1;
-        this.sliderMainDom.value = this.LOLReplayObject.frame + 1;
-        this.LOLReplayObject.viewFrame(this.LOLReplayObject.frame + 1);
-        if (this.LOLReplayObject.frame >= this.LOLReplayObject.data.frames.length - 1) {
-          this.onStartToggle();
-        }
-      }, 900); // 900 for now, next phase I'll add user control
+        this.LOLReplayObject.viewFrame(++this.LOLReplayObject.frame);
+      }, 900);
     }
+    // if (this.playInterval !== null) {
+    //   // There is no play interval, end.
+    //   this.playButtonDom.value = "Start";
+    //   clearInterval(this.playInterval);
+    //   this.playInterval = null;
+    // } else {
+    //   this.playButtonDom.value = "Stop";
+    //   // This will create an interval that will clear itself once at the end
+    //   this.playInterval = setInterval(() => {
+    //     // Set the various views and update counts
+    //     this.frameCounterDom.innerText = this.LOLReplayObject.frame + 1;
+    //     this.LOLReplayObject.viewFrame(this.LOLReplayObject.frame + 1);
+    //     if (this.LOLReplayObject.frame >= this.LOLReplayObject.data.frames.length - 1) {
+    //       this.onStartToggle();
+    //     }
+    //   }, (1 / this.replaySpeed) * 900); // 900 for now, next phase I'll add user control
+    // }
   }
 }
 
@@ -326,7 +449,10 @@ class LOLReplay {
    */
   initialize() {
     let currentObjectives = {
-      turrets: []
+      turrets: [],
+      dragon: null,
+      pitObjective: null,
+      pitName: null
     };
 
     // Loop through and generate parse into objectives
@@ -345,6 +471,20 @@ class LOLReplay {
             // Destroy a turret from the map
             case "destroyTurrets":
               value.forEach((e) => currentObjectives.turrets.splice(currentObjectives.turrets.indexOf(e), 1));
+              break;
+
+            // Dragon in the dragon pit
+            case "setDragon":
+              currentObjectives.dragon = value;
+              break;
+
+            // Monster in the rift pit
+            case "setPit":
+              if (value !== null) {
+                currentObjectives.pitObjective = value[0];
+                currentObjectives.pitName = value[1];
+              }
+
               break;
           }
         }
@@ -431,8 +571,17 @@ class LOLReplay {
       }
     }
 
-    // objectives
+    // -- objectives
+    // pit objective
+    this.scoreboard.updateObjectives(this.objectives[frameIndex].dragon, this.objectives[frameIndex].pitName);
+    this.map.updatePitDisplay(this.objectives[frameIndex].pitObjective, this.options.monsters);
+    // dragons
+    this.map.updateDragonDisplay(this.objectives[frameIndex].dragon, this.options.dragons);
+    // turrets
     this.map.updateTurretDisplay(this.objectives[frameIndex].turrets);
+
+    // Misc frame management
     this.frame = frameIndex; // update frame index
+    this.slider.onFrameUpdate();
   }
 }

@@ -32,7 +32,9 @@ function generate() {
 
       frames: [{
         obj: {
-          spawnTurrets: [...Array(22).keys()]
+          spawnTurrets: [...Array(22).keys()],
+          setDragon: 'mountain',
+          setPit: ['baron', "Baron Nashor"]
         },
         0: {pos: [0, 0], gold: 0, score: [0, 0, 0]},
         1: {pos: [0, 0], gold: 0, score: [0, 0, 0]},
@@ -54,6 +56,10 @@ function generate() {
         2: {pos: [21, 24.5], gold: 0, score: [0, 0, 0]},
         3: {pos: [20.5, 21.5], gold: 0, score: [0, 0, 0]}
       }, {
+        obj: {
+          setDragon: null,
+          setPit: null
+        },
         0: {pos: [7.5, 8], gold: 0, score: [0, 0, 0]},
         1: {pos: [3, 8], gold: 0, score: [0, 0, 0]},
         2: {pos: [20, 22.5], gold: 0, score: [0, 0, 0]},
@@ -109,7 +115,20 @@ function generate() {
     {
       backgroundImage:  backgroundImage,
       height: size,
-      turretImage: "https://i.imgur.com/WdQx48B.png",
+      turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
+      dragons: {
+        chemtech: "https://cdn.mkn.cx/lolreplay/chemtech.png",
+        cloud: "https://cdn.mkn.cx/lolreplay/cloud.png",
+        hextech: "https://cdn.mkn.cx/lolreplay/hextech.png",
+        infernal: "https://cdn.mkn.cx/lolreplay/infernal.png",
+        mountain: "https://cdn.mkn.cx/lolreplay/mountain.png",
+        ocean: "https://cdn.mkn.cx/lolreplay/ocean.png",
+        elder: "https://cdn.mkn.cx/lolreplay/elder.png"
+      },
+      monsters: {
+        rift: "https://cdn.mkn.cx/lolreplay/rift.png",
+        baron: "https://cdn.mkn.cx/lolreplay/baron.png"
+      }
       // turrets: [...]
     }
 

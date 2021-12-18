@@ -38,6 +38,13 @@
     border-radius: 20px;
 }
 
+/* map dragon and pit */
+.lol-replay #lr_map_dragon, .lol-replay #lr_map_pit {
+    position: absolute;
+    border-radius: 50%;
+    border: white solid 3px;
+}
+
 /* map turrets */
 .lol-replay .lr-map-turret {
     position: absolute;
@@ -59,7 +66,6 @@
     bottom: 0;
     left: 0;
     border-radius: 50%;
-    border: white solid 3px;
 }
 
 .lol-replay .lr-map-champion.team0 {
@@ -73,6 +79,23 @@
 /* -- lr-score -- */
 .lol-replay #lr_score {
     padding-left: 12px;
+}
+
+/* objectives */
+.lol-replay #lr_score #lr_score_rift {
+    color: purple;
+    display: none;
+    text-transform: capitalize;
+}
+
+.lol-replay #lr_score #lr_score_dragon {
+    color: midnightblue;
+    display: none;
+    text-transform: capitalize;
+}
+
+.lol-replay #lr_score #lr_score_noobj {
+    display: block;
 }
 
 /* player scores */
