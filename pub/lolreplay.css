@@ -66,6 +66,7 @@
     bottom: 0;
     left: 0;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 .lol-replay .lr-map-champion.team0 {
@@ -79,6 +80,7 @@
 /* -- lr-score -- */
 .lol-replay #lr_score {
     padding-left: 12px;
+    overflow: auto;
 }
 
 /* objectives */
@@ -119,4 +121,38 @@
 
 .lol-replay #lr_slider .lr-slider-main input {
     width: 250px;
+}
+
+/* -- lr-card -- */
+.lol-replay-card {
+    position: absolute;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 99;
+    font-family: "Roboto", sans-serif;
+    -webkit-box-shadow: 0 1px 5px 1px rgba(0,0,0,0.93);
+    box-shadow: 0 1px 5px 1px rgba(0,0,0,0.93);
+}
+
+.lol-replay-card .popup-container .close {
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.lol-replay-card .popup-container {
+    display: flex;
+    gap: 8px;
+}
+
+.lol-replay-card .popup-container .image img {
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+}
+
+.lol-replay-card .popup-container .text h3, .lol-replay-card p {
+    margin: 0;
 }

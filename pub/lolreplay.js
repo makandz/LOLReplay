@@ -1,5 +1,44 @@
 'use strict';
 
+const mousePos = { x: 0, y: 0 }
+onmousemove = (e) => {
+  mousePos.x = e.clientX;
+  mousePos.y = e.clientY;
+}
+
+function showCardPopup(img, title, description, link) {
+  document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());
+
+  let parsedLink = link ? `
+    <p><a href="${link.url}" target="_blank">
+      ${link.title}</a></p>
+  ` : "";
+
+  const cardDom = document.createElement("div");
+  cardDom.style.top = `${mousePos.y}px`;
+  cardDom.style.left = `${mousePos.x}px`;
+  cardDom.classList.add('lol-replay-card');
+
+  cardDom.innerHTML = `
+    <div class="popup-container">
+      <div class="image">
+        <img src="${img}" alt="${title}" />
+      </div>
+      <div class="text">
+        <h3>${title}</h3>
+        <hr />
+        <p>${description}</p>
+        ${parsedLink}
+      </div>
+      <div class="close" onclick="document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());">
+        x
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(cardDom);
+}
+
 // -- MAIN OBJECTS
 class LRMap {
   /**
@@ -17,6 +56,7 @@ class LRMap {
     this.backgroundImage = backgroundImage;
     this.turretImage = turretImage;
 
+    // use default turret data if none is defined
     this.turrets = turrets ?? [
       { pos: [2, 3.5] },
       { pos: [1.5, 7.5] },
@@ -101,6 +141,8 @@ class LRMap {
         class="lr-map-champion team${champion.team}"
         width="${Math.round(this.height / 14)}"
         data-id="${champion.id}"
+        onclick="showCardPopup('${champion.img}', '${champion.name}', 'Played by ${champion.player}', 
+          { url: 'https://u.gg/lol/profile/na1/${champion.player}/overview', title: 'U.GG Profile' })"
       />
     `;
   }
@@ -209,9 +251,10 @@ class LRScoreboard {
    * Initializes and renders the leaderboard DOM on screen.
    * @param container
    */
-  initialize(container) {
+  initialize(container, maxHeight) {
     this.scoreDom = document.createElement("div");
     this.scoreDom.id = "lr_score";
+    this.scoreDom.style.height = `${maxHeight}px`;
     this.scoreDom.innerHTML += `
       <h1>Player Scores</h1>
       <div id="lr_score_players"></div>
@@ -326,7 +369,7 @@ class LRSlider {
     sliderDom.id = "lr_slider";
     sliderDom.innerHTML = `
       <div class="lr-slider-frame">
-        Frame: <span class="frame">0</span>/${this.LOLReplayObject.data.frames.length - 1}
+        <span class="frame">0</span>/${this.LOLReplayObject.data.frames.length - 1}
       </div>
       <div class="lr-slider-main">
         <input type="range" min="0" max="${this.LOLReplayObject.data.frames.length - 1}" value="0" />
@@ -354,9 +397,25 @@ class LRSlider {
     this.fastButtonDom = this.sliderDom.querySelector(".lr-slider-controls #lr_slider_fast");
     container.append(sliderDom);
 
-    // adding change event handler for slider
+    // adding change event handler for slider and start/stop
     this.sliderMainDom.addEventListener('change', (e) => this.onFrameChange(e));
     this.playButtonDom.addEventListener('click', () => this.onStartToggle());
+
+    // speed buttons
+    const updatePlayButtonSpeedText = (speed) => this.playButtonDom.value = `Start (x${speed})`;
+    this.fastButtonDom.addEventListener('click', () => {
+      this.replaySpeed = Math.min(4, this.replaySpeed * 2);
+      updatePlayButtonSpeedText(this.replaySpeed);
+    });
+
+    this.slowButtonDom.addEventListener('click', () => {
+      this.replaySpeed = Math.max(0.25, this.replaySpeed / 2);
+      updatePlayButtonSpeedText(this.replaySpeed);
+    });
+
+    // frame buttons
+    this.nextButtonDom.addEventListener('click', () => this.LOLReplayObject.viewFrame(++this.LOLReplayObject.frame));
+    this.previousButtonDom.addEventListener('click', () => this.LOLReplayObject.viewFrame(--this.LOLReplayObject.frame));
   }
 
   /**
@@ -368,6 +427,10 @@ class LRSlider {
     this.LOLReplayObject.viewFrame(frameIndex);
   }
 
+  /**
+   * Handles button status and text displaying when frames update, this
+   * is called from the main LOLReplay.
+   */
   onFrameUpdate() {
     const currentFrame = this.LOLReplayObject.frame;
     this.frameCounterDom.innerText = currentFrame;
@@ -396,29 +459,18 @@ class LRSlider {
     if (this.playInterval !== null) {
       this.playButtonDom.value = `Start (x${this.replaySpeed})`;
       clearInterval(this.playInterval);
+      this.playInterval = null;
     } else {
       this.playButtonDom.value = `Stop (x${this.replaySpeed})`;
       this.playInterval = setInterval(() => {
-        this.LOLReplayObject.viewFrame(++this.LOLReplayObject.frame);
-      }, 900);
+        if (this.LOLReplayObject.frame <= this.LOLReplayObject.data.frames.length - 2)
+          this.LOLReplayObject.viewFrame(++this.LOLReplayObject.frame);
+        else
+          this.onStartToggle();
+      }, (1 / this.replaySpeed) * 900);
     }
-    // if (this.playInterval !== null) {
-    //   // There is no play interval, end.
-    //   this.playButtonDom.value = "Start";
-    //   clearInterval(this.playInterval);
-    //   this.playInterval = null;
-    // } else {
-    //   this.playButtonDom.value = "Stop";
-    //   // This will create an interval that will clear itself once at the end
-    //   this.playInterval = setInterval(() => {
-    //     // Set the various views and update counts
-    //     this.frameCounterDom.innerText = this.LOLReplayObject.frame + 1;
-    //     this.LOLReplayObject.viewFrame(this.LOLReplayObject.frame + 1);
-    //     if (this.LOLReplayObject.frame >= this.LOLReplayObject.data.frames.length - 1) {
-    //       this.onStartToggle();
-    //     }
-    //   }, (1 / this.replaySpeed) * 900); // 900 for now, next phase I'll add user control
-    // }
+
+    this.onFrameUpdate();
   }
 }
 
@@ -504,11 +556,12 @@ class LOLReplay {
       this.options.turretImage,
       this.options.turrets
     );
+
     this.map.initialize(this.container);
 
     // Initialize the scoreboard
     this.scoreboard = new LRScoreboard();
-    this.scoreboard.initialize(this.container);
+    this.scoreboard.initialize(this.container, this.options.height);
 
     // Setup the champions objects
     this.data.champions.forEach((champion, championIndex) => {
