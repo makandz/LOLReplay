@@ -1,56 +1,19 @@
 'use strict';
 
-const mousePos = { x: 0, y: 0 }
-onmousemove = (e) => {
-  mousePos.x = e.clientX;
-  mousePos.y = e.clientY;
-}
-
-function showCardPopup(img, title, description, link) {
-  document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());
-
-  let parsedLink = link ? `
-    <p><a href="${link.url}" target="_blank">
-      ${link.title}</a></p>
-  ` : "";
-
-  const cardDom = document.createElement("div");
-  cardDom.style.top = `${mousePos.y}px`;
-  cardDom.style.left = `${mousePos.x}px`;
-  cardDom.classList.add('lol-replay-card');
-
-  cardDom.innerHTML = `
-    <div class="popup-container">
-      <div class="image">
-        <img src="${img}" alt="${title}" />
-      </div>
-      <div class="text">
-        <h3>${title}</h3>
-        <hr />
-        <p>${description}</p>
-        ${parsedLink}
-      </div>
-      <div class="close" onclick="document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());">
-        x
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(cardDom);
-}
-
 // -- MAIN OBJECTS
 class LRMap {
   /**
    * LOLReplay map object used for map DOM manipulation.
+   * @param containerId Container ID of main lolreplay container
    * @param height The height of the map, width will match.
    * @param backgroundImage The background image of choice.
    * @param turretImage Image for turrets
    * @param turrets Turrets override data object
    */
-  constructor(height, backgroundImage, turretImage, turrets) {
+  constructor(containerId, height, backgroundImage, turretImage, turrets) {
     this.mapDom = null;
     this.renderedTurrets = 0;
+    this.containerId = containerId;
 
     this.height = height;
     this.backgroundImage = backgroundImage;
@@ -133,7 +96,7 @@ class LRMap {
    * Takes in a champion and adds it to the map.
    * @param champion The LRChampion object to add
    */
-  addChampion(champion) {
+  addChampion(champion, onClickHook) {
     this.mapDom.innerHTML += `
       <img
         src="${champion.img}"
@@ -141,10 +104,17 @@ class LRMap {
         class="lr-map-champion team${champion.team}"
         width="${Math.round(this.height / 14)}"
         data-id="${champion.id}"
-        onclick="showCardPopup('${champion.img}', '${champion.name}', 'Played by ${champion.player}', 
-          { url: 'https://u.gg/lol/profile/na1/${champion.player}/overview', title: 'U.GG Profile' })"
       />
     `;
+
+    this.mapDom.querySelector(`#${this.containerId} .lr-map-champion[data-id="${champion.id}`).addEventListener(
+      'click', () => {
+      if (onClickHook)
+        onClickHook(champion);
+      else
+        LRCardPopup(champion.img, champion.name, `Played by ${champion.player}`,
+          { url: `https://u.gg/lol/profile/na1/${champion.player}/overview`, title: 'U.GG Profile' })
+    });
   }
 
   /**
@@ -154,7 +124,7 @@ class LRMap {
    * @param newY The new Y location
    */
   updateChampionPosition(championId, newX, newY) {
-    let championDom = document.querySelector(`.lr-map-champion[data-id="${championId}"]`);
+    let championDom = document.querySelector(`#${this.containerId} .lr-map-champion[data-id="${championId}"]`);
     championDom.style.setProperty('left', `${newX * (this.height / 28)}px`);
     championDom.style.bottom = `${newY * (this.height / 28)}px`;
   }
@@ -165,7 +135,7 @@ class LRMap {
    */
   updateTurretDisplay(turrets) {
     [...Array(this.renderedTurrets).keys()].forEach((turretIndex) => {
-      document.querySelector(`.lr-map-turret[data-id="${turretIndex}"]`).style.visibility =
+      document.querySelector(`#${this.containerId} .lr-map-turret[data-id="${turretIndex}"]`).style.visibility =
         turrets.includes(turretIndex) ? "visible" : "hidden";
     });
   }
@@ -176,7 +146,7 @@ class LRMap {
    * @param dragonImages List of all dragon images, it'll index this based on name
    */
   updateDragonDisplay(dragon, dragonImages) {
-    const dragonDom = document.querySelector(`#lr_map_dragon`);
+    const dragonDom = document.querySelector(`#${this.containerId} #lr_map_dragon`);
     if (dragon === null) {
       dragonDom.style.visibility = "hidden";
     } else {
@@ -191,7 +161,7 @@ class LRMap {
    * @param pitImages List of all pit images, it'll index this based on name
    */
   updatePitDisplay(pit, pitImages) {
-    const pitDom = document.querySelector(`#lr_map_pit`);
+    const pitDom = document.querySelector(`#${this.containerId} #lr_map_pit`);
     if (pit === null) {
       pitDom.style.visibility = "hidden";
     } else {
@@ -242,14 +212,16 @@ class LRScoreboard {
   /**
    * LOLReplay scoreboard, used to manage various DOM aspects
    */
-  constructor() {
+  constructor(containerId) {
     this.scoreDom = null;
     this.playerScoreDom = null;
+    this.containerId = containerId;
   }
 
   /**
    * Initializes and renders the leaderboard DOM on screen.
    * @param container
+   * @param maxHeight
    */
   initialize(container, maxHeight) {
     this.scoreDom = document.createElement("div");
@@ -295,7 +267,7 @@ class LRScoreboard {
    * @param gold Gold to set
    */
   updateGold(championId, gold) {
-    let scoreDom = document.querySelector(`[data-id="${championId}"] .gold`);
+    let scoreDom = document.querySelector(`#${this.containerId} [data-id="${championId}"] .gold`);
     scoreDom.innerText = gold;
   }
 
@@ -305,14 +277,14 @@ class LRScoreboard {
    * @param kda KDA to set (in array form)
    */
   updateScore(championId, kda) {
-    let scoreDom = document.querySelector(`[data-id="${championId}"] .score`);
+    let scoreDom = document.querySelector(`#${this.containerId} [data-id="${championId}"] .score`);
     scoreDom.innerText = kda.join("/");
   }
 
   updateObjectives(dragon, rift) {
-    const noObjectiveDom = document.querySelector("#lr_score_noobj");
-    const riftDom = document.querySelector("#lr_score_rift");
-    const dragonDom = document.querySelector("#lr_score_dragon");
+    const noObjectiveDom = document.querySelector(`#${this.containerId} #lr_score_noobj`);
+    const riftDom = document.querySelector(`#${this.containerId} #lr_score_rift`);
+    const dragonDom = document.querySelector(`#${this.containerId} #lr_score_dragon`);
 
     // hide by default
     dragonDom.style.display = "none";
@@ -365,6 +337,8 @@ class LRSlider {
    * @param container Container to append to
    */
   initialize(container) {
+    const disabled = this.LOLReplayObject.options.player?.disabled ? 'disabled' : '';
+
     let sliderDom = document.createElement("div");
     sliderDom.id = "lr_slider";
     sliderDom.innerHTML = `
@@ -372,19 +346,22 @@ class LRSlider {
         <span class="frame">0</span>/${this.LOLReplayObject.data.frames.length - 1}
       </div>
       <div class="lr-slider-main">
-        <input type="range" min="0" max="${this.LOLReplayObject.data.frames.length - 1}" value="0" />
+        <input
+          type="range" 
+          min="0" 
+          max="${this.LOLReplayObject.data.frames.length - 1}" 
+          value="0"
+          style="width: ${this.LOLReplayObject.options.height - 50}px;"
+          ${disabled}
+        />
       </div>
       <div class="lr-slider-controls">
-        <input type="button" value="-" id="lr_slider_slow" title="Decrease play speed" />
-        <input type="button" value="<<" id="lr_slider_previous" title="Previous frame" />
-        <input type="button" value="Start (x1)" id="lr_slider_play" title="Start/Stop toggle" />
-        <input type="button" value=">>" id="lr_slider_next" title="Next frame" />
-        <input type="button" value="+" id="lr_slider_fast" title="Increase play speed" />
+        <input type="button" value="-" id="lr_slider_slow" title="Decrease play speed" ${disabled} />
+        <input type="button" value="<<" id="lr_slider_previous" title="Previous frame" ${disabled} />
+        <input type="button" value="Start (x1)" id="lr_slider_play" title="Start/Stop toggle" ${disabled} />
+        <input type="button" value=">>" id="lr_slider_next" title="Next frame" ${disabled} />
+        <input type="button" value="+" id="lr_slider_fast" title="Increase play speed" ${disabled} />
       </div>
-    `;
-
-    container.innerHTML += `
-      <div class="break"></div>
     `;
 
     this.sliderDom = sliderDom;
@@ -399,7 +376,11 @@ class LRSlider {
 
     // adding change event handler for slider and start/stop
     this.sliderMainDom.addEventListener('change', (e) => this.onFrameChange(e));
-    this.playButtonDom.addEventListener('click', () => this.onStartToggle());
+    this.playButtonDom.addEventListener('click', () => {
+      this.onStartToggle();
+      if (this.LOLReplayObject.options?.hooks?.onStartToggle)
+        this.LOLReplayObject.options.hooks.onStartToggle();
+    });
 
     // speed buttons
     const updatePlayButtonSpeedText = (speed) => this.playButtonDom.value = `Start (x${speed})`;
@@ -432,22 +413,25 @@ class LRSlider {
    * is called from the main LOLReplay.
    */
   onFrameUpdate() {
+    const allDisabled = this.LOLReplayObject.options.player?.disabled;
     const currentFrame = this.LOLReplayObject.frame;
+
     this.frameCounterDom.innerText = currentFrame;
     this.sliderMainDom.value = currentFrame;
 
     // buttons disabled if the video player is playing
-    this.previousButtonDom.disabled = this.playInterval !== null;
-    this.nextButtonDom.disabled = this.playInterval !== null;
-    this.slowButtonDom.disabled = this.playInterval !== null;
-    this.fastButtonDom.disabled = this.playInterval !== null;
+    this.previousButtonDom.disabled = this.playInterval !== null || allDisabled;
+    this.nextButtonDom.disabled = this.playInterval !== null || allDisabled;
+    this.slowButtonDom.disabled = this.playInterval !== null || allDisabled;
+    this.fastButtonDom.disabled = this.playInterval !== null || allDisabled;
 
-    if (this.playInterval !== null) return; // don't continue if playing
+    if (this.playInterval !== null || allDisabled) return; // don't continue if playing
 
     // First frame disable button
     if (currentFrame <= 0) {
       this.previousButtonDom.disabled = true;
-    } else if (currentFrame >= this.LOLReplayObject.data.frames.length - 1) { // last frame disable next
+    }
+    if (currentFrame >= this.LOLReplayObject.data.frames.length - 1) { // last frame disable next
       this.nextButtonDom.disabled = true;
     }
   }
@@ -464,9 +448,13 @@ class LRSlider {
       this.playButtonDom.value = `Stop (x${this.replaySpeed})`;
       this.playInterval = setInterval(() => {
         if (this.LOLReplayObject.frame <= this.LOLReplayObject.data.frames.length - 2)
-          this.LOLReplayObject.viewFrame(++this.LOLReplayObject.frame);
-        else
-          this.onStartToggle();
+          this.LOLReplayObject.viewFrame(this.LOLReplayObject.frame + 1);
+        else {
+          if (this.LOLReplayObject.options.player?.repeat)
+            this.LOLReplayObject.viewFrame(0);
+          else
+            this.onStartToggle();
+        }
       }, (1 / this.replaySpeed) * 900);
     }
 
@@ -535,6 +523,9 @@ class LOLReplay {
               if (value !== null) {
                 currentObjectives.pitObjective = value[0];
                 currentObjectives.pitName = value[1];
+              } else {
+                currentObjectives.pitObjective = null;
+                currentObjectives.pitName = null;
               }
 
               break;
@@ -549,8 +540,13 @@ class LOLReplay {
       currentObjectives = JSON.parse(JSON.stringify(currentObjectives));
     });
 
+    // set CSS properties
+    this.container.classList.add('lol-replay');
+    this.container.style.width = `${this.options.height <= 250 ? this.options.height * 3.5 : this.options.height * 2.5}px`;
+
     // Initialize the map
     this.map = new LRMap(
+      this.container.id,
       this.options.height,
       this.options.backgroundImage,
       this.options.turretImage,
@@ -560,7 +556,7 @@ class LOLReplay {
     this.map.initialize(this.container);
 
     // Initialize the scoreboard
-    this.scoreboard = new LRScoreboard();
+    this.scoreboard = new LRScoreboard(this.container.id);
     this.scoreboard.initialize(this.container, this.options.height);
 
     // Setup the champions objects
@@ -574,7 +570,7 @@ class LOLReplay {
       );
 
       this.champions.push(champObject); // insert into champs storage array
-      this.map.addChampion(champObject); // add the champion to the map
+      this.map.addChampion(champObject, this.options?.hooks?.onChampionClick); // add the champion to the map
       this.scoreboard.addChampion(champObject); // add champion to the scoreboard
     });
 
@@ -582,7 +578,12 @@ class LOLReplay {
     this.slider = new LRSlider(this);
     this.slider.initialize(this.container);
 
+    if (this.options?.hooks?.onInitialization)
+      this.options.hooks.onInitialization();
+
     // Render first frame
+    if (this.options.player?.autoplay)
+      this.slider.onStartToggle();
     this.viewFrame(0);
   }
 
@@ -637,4 +638,56 @@ class LOLReplay {
     this.frame = frameIndex; // update frame index
     this.slider.onFrameUpdate();
   }
+}
+
+// -- GLOBAL TRACKERS
+/**
+ * Mouse tracker, used for LRCardPopup, attaches to mouse event listener
+ * @type {{x: number, y: number}} MouseX and MouseY
+ */
+const LRMousePosTracker = { x: 0, y: 0 }
+onmousemove = (e) => {
+  LRMousePosTracker.x = e.clientX;
+  LRMousePosTracker.y = e.clientY;
+}
+
+/**
+ * Global popup method used for the card display, requires
+ * the use of a global mouse tracker to work.
+ * @param img URL to image for card content
+ * @param title Title of card content
+ * @param description Description
+ * @param link Optional link object
+ */
+function LRCardPopup(img, title, description, link) {
+  document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());
+
+  let parsedLink = link ? `
+    <p><a href="${link.url}" target="_blank">
+      ${link.title}</a></p>
+  ` : "";
+
+  const cardDom = document.createElement("div");
+  cardDom.style.top = `${LRMousePosTracker.y}px`;
+  cardDom.style.left = `${LRMousePosTracker.x}px`;
+  cardDom.classList.add('lol-replay-card');
+
+  cardDom.innerHTML = `
+    <div class="popup-container">
+      <div class="image">
+        <img src="${img}" alt="${title}" />
+      </div>
+      <div class="text">
+        <h3>${title}</h3>
+        <hr />
+        <p>${description}</p>
+        ${parsedLink}
+      </div>
+      <div class="close" onclick="document.querySelectorAll('.lol-replay-card').forEach(e => e.remove());">
+        x
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(cardDom);
 }

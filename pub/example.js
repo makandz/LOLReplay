@@ -129,7 +129,6 @@ function generate() {
         rift: "https://cdn.mkn.cx/lolreplay/rift.png",
         baron: "https://cdn.mkn.cx/lolreplay/baron.png"
       }
-      // turrets: [...]
     }
 
   );

@@ -1,0 +1,17 @@
+.js {
+    font-family: 'Righteous', cursive;
+    font-size: 1.25rem;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.hint {
+    color: #363636;
+    font-size: 0.8rem;
+    margin-top: -5px;
+}

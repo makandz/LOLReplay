@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    background-image: url("https://cdn.mkn.cx/lolreplay/background.svg?v=6");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* navbar */
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #1F363D;
+}
+
+.navbar li {
+    float: left;
+}
+
+.navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 13px 20px;
+    text-decoration: none;
+}
+
+.navbar li a:hover:not(.active) {
+    background-color: #2d4d57;
+}
+
+.navbar .active {
+    background-color: #40798C;
+}
+
+.navbar ul li:first-child {
+    font-family: 'Righteous', cursive;
+}
+
+.extension {
+    color: #785a28;
+}
+
+.header {
+    text-align: center;
+    font-size: 3rem;
+    font-family: 'Righteous', cursive;
+}
+
+.subheader {
+    font-size: 2rem;
+    font-family: 'Righteous', cursive;
+    margin-bottom: 5px;
+}
+
+.subtext {
+    margin-top: 0;
+}
+
+.container {
+    margin: auto;
+    max-width: 1300px;
+}
+
+pre {
+    max-height: 300px;
+    overflow: auto;
+}
