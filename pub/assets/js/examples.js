@@ -2,7 +2,7 @@ hljs.highlightAll();
 
 // BASIC
 const basicOptions = {
-  backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  backgroundImage: "https://cdn.mkn.cx/lolreplay/map.png?v=2",
   height: 250,
   turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
   dragons: {
@@ -43,7 +43,7 @@ basic.initialize();
 
 // Objective capturing
 const objectiveOptions = {
-  backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  backgroundImage: "https://cdn.mkn.cx/lolreplay/map.png?v=2",
   height: 250,
   turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
   dragons: {
@@ -226,7 +226,7 @@ const gameData = {
 };
 
 const gameOptions = {
-  backgroundImage:  "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  backgroundImage:  "https://cdn.mkn.cx/lolreplay/map.png?v=2",
   height: 250,
   turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
   dragons: {
@@ -254,12 +254,9 @@ game.initialize();
 
 // customize
 const customOptions = {
-  backgroundImage: "https://2.bp.blogspot.com/--A1wNZhS868/U7L4xKhbQTI/AAAAAAAAS04/rfzak1JCZFY/s412/srdb3-1.jpg",
+  backgroundImage: "https://cdn.mkn.cx/lolreplay/custom.jpg",
   height: 400,
-  turretImage: "https://icon-library.com/images/free-square-icon/free-square-icon-7.jpg",
-  dragons: {
-    mountain: "https://s3.cointelegraph.com/storage/uploads/view/bad02e8b57a64d349aa5eec318298b4b.png",
-  },
+  turretImage: "https://cdn.mkn.cx/lolreplay/square.jpg",
   turrets: [
     { pos: [11, 11], team: 0},
     { pos: [17, 17], team: 1}
@@ -274,7 +271,7 @@ const customOptions = {
 const customData = {
   champions: [{
     name: "Just right",
-    img: "https://i.kym-cdn.com/photos/images/newsfeed/001/070/061/d96.jpg",
+    img: "https://cdn.mkn.cx/lolreplay/justright.jpg",
     player: "Mark",
     team: 0
   }],
@@ -297,7 +294,7 @@ const customize = new LOLReplay(
 customize.initialize();
 
 const devOptions = {
-  backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  backgroundImage: "https://cdn.mkn.cx/lolreplay/map.png?v=2",
   height: 250,
   turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
   dragons: {

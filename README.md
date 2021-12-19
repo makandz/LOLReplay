@@ -22,3 +22,10 @@ The app can now be initialized with
 ```
 
 To understand more about the required data values and inputs, please visit the documentation page at [rocky-peak-17595.herokuapp.com/docs.html](https://rocky-peak-17595.herokuapp.com/docs.html)
+
+## Assets
+Images and other assets must be self-hosted and linked through the various API methods shown below.
+
+Various assets were retrieved from Riot Games resources and/or U.GG. These assets are copyrighted and **should not be used in a commercial setting.**
+
+I'm hosting a public CDN at _cdn.mkn.cx/lolreplay_ with various assets already, feel free to use them. (e.g., if you want the image to the Mountain Drake, you can access it via [cdn.mkn.cx/lolreplay/mountain.png](https://cdn.mkn.cx/lolreplay/mountain.png).

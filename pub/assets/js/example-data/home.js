@@ -324,7 +324,7 @@ const LRMockData = {
 }
 
 const LRMockOptions = {
-  backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  backgroundImage: "https://cdn.mkn.cx/lolreplay/map.png?v=2",
   height: 400,
   turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
   dragons: {
