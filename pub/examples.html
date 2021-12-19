@@ -15,7 +15,7 @@
 <div class="navbar">
     <ul>
         <li><a href="index.html">LOLReplay.js</a></li>
-        <li><a href="documentation.html">Documentation</a></li>
+        <li><a href="docs.html">Documentation</a></li>
         <li><a class="active" href="examples.html">Examples</a></li>
     </ul>
 </div>
@@ -296,7 +296,7 @@ game.initialize();</code></pre>
     <div id="customize"></div>
     <p class="js">Javascript code</p>
     <p>Note: Make sure you have a <code>div</code> with the id <strong>customize</strong> on your webpage.</p>
-    <pre><code>const customOptions = {
+    <pre><code class="language-js">const customOptions = {
   backgroundImage: "https://2.bp.blogspot.com/--A1wNZhS868/U7L4xKhbQTI/AAAAAAAAS04/rfzak1JCZFY/s412/srdb3-1.jpg",
   height: 400,
   turretImage: "http://assets.stickpng.com/images/58482d7fcef1014c0b5e4a5a.png",
@@ -347,7 +347,49 @@ customize.initialize();</code></pre>
   <div id="dev"></div>
   <p class="js">Javascript code</p>
   <p>Note: Make sure you have a <code>div</code> with the id <strong>dev</strong> on your webpage.</p>
-  <pre><code></code></pre>
+  <pre><code class="language-js">const devOptions = {
+  backgroundImage: "http://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png",
+  height: 250,
+  turretImage: "https://cdn.mkn.cx/lolreplay/turret.png",
+  dragons: {
+    mountain: "https://cdn.mkn.cx/lolreplay/mountain.png",
+  },
+  monsters: {
+    rift: "https://cdn.mkn.cx/lolreplay/rift.png",
+  },
+  hooks: {
+    onStartToggle: () => alert("Start toggle was called"),
+    onChampionClick: (e) => alert("Champion was clicked: " + e.name),
+    onInitialization: (e) => console.log("Dev version loaded")
+  }
+}
+
+const devData = {
+  champions: [{
+    name: "Morgana",
+    img: "https://static.u.gg/assets/lol/riot_static/11.23.1/img/champion/Morgana.png",
+    player: "Tommy",
+    team: 0
+  }],
+  frames: [{
+    obj: {
+      setPit: ['rift', "Rift Herald"],
+    },
+    0: {
+      pos: [12, 12],
+      gold: 50,
+      score: [0, 0, 0]
+    },
+  }]
+}
+
+const dev = new LOLReplay(
+  document.querySelector("#dev"),
+  devData,
+  devOptions
+);
+
+dev.initialize();</code></pre>
 </div>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>

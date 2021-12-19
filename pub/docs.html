@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+    <title>API Documentation - LOLReplay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <link href="assets/css/global.css" rel="stylesheet" />
+    <link href="assets/css/lolreplay.css" rel="stylesheet" />
+    <link href="assets/css/examples.css" rel="stylesheet" />
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+</head>
+<body>
+
+<div class="navbar">
+    <ul>
+        <li><a href="index.html">LOLReplay.js</a></li>
+        <li><a class="active" href="docs.html">Documentation</a></li>
+        <li><a href="examples.html">Examples</a></li>
+    </ul>
+</div>
+
+<h1 class="header">API Documentation</h1>
+<div class="container">
+    <h2>Getting started</h2>
+    <p>To get started, import the required script and CSS file. The script can be loaded in the head or body.</p>
+    <pre><code class="language-html">&lt;&#108;&#105;&#110;&#107;&#32;&#114;&#101;&#108;&equals;&apos;&#115;&#116;&#121;&#108;&#101;&#115;&#104;&#101;&#101;&#116;&apos;&#32;&#104;&#114;&#101;&#102;&equals;&apos;&#112;&#97;&#116;&#104;&sol;&#116;&#111;&sol;&#108;&#111;&#108;&#114;&#101;&#112;&#108;&#97;&#121;&period;&#99;&#115;&#115;&apos;&#32;&sol;&gt;
+&lt;&#115;&#99;&#114;&#105;&#112;&#116;&#32;&#115;&#114;&#99;&equals;&apos;&#112;&#97;&#116;&#104;&sol;&#116;&#111;&sol;&#108;&#111;&#108;&#114;&#101;&#112;&#108;&#97;&#121;&period;&#106;&#115;&apos;&gt;&lt;&sol;&#115;&#99;&#114;&#105;&#112;&#116;&gt;</code></pre>
+
+    <p>The app can now be initialized with</p>
+    <pre><code class="language-html">&lt;&#115;&#99;&#114;&#105;&#112;&#116;&gt;
+  const LR = LOLReplay(
+    document.querySelector('#main'),
+    { ... data ... },
+    { ... options ... }
+  );
+&lt;&sol;&#115;&#99;&#114;&#105;&#112;&#116;&gt;</code></pre>
+    <h2>Setup</h2>
+    <pre><code class="language-js">const LR = LOLReplay(
+  document.querySelector('#main'),
+  LRDataObject,
+  LROptionsObject
+);</code></pre>
+
+    <h3>LRDataObject (required)</h3>
+    <pre><code class="language-js">{
+  champions: [ ...ChampionObjects ],
+  frames: [ ...FramesObjects ]
+}</code></pre>
+
+    <h4>ChampionObjects (required)</h4>
+    <pre><code class="language-js">{
+  name: string,
+  img: string,
+  player: string,
+  team: int
+}</code></pre>
+
+    <p><b>name</b>: required <br /><b>img</b>: required (URL) <br /> <b>player</b>: required <br /> <b>team</b>:
+        required (0 for blue side, 1 for red side)</p>
+
+    <h4>FramesObjects (required)</h4>
+    <pre><code class="language-js">{
+  obj: {
+    setPit: [string, string] || null,
+    setDragon: string || null,
+    setTurrets: [ ...int ]
+  },
+  championIndex: {
+    pos: [float, float],
+    gold: int,
+    score: [int, int, int]
+  },
+}]</code></pre>
+    <p><b>setPit</b>: optional (index 0 is type [e.g., rift], index 1 is the name [e.g., Rift Herald])<br />
+        <b>setDragon</b>: optional <br />
+        <b>setTurrets</b>: optional (array of ints indicating turret IDs) <br />
+        <b>pos</b>: required (x and y coordinates) <br />
+        <b>gold</b>: required <br />
+        <b>kda</b>: required (kills, deaths, assists) <br /></p>
+
+    <h3>LROptionsObject (required)</h3>
+    <pre><code>{
+  backgroundImage: string,
+  height: int,
+  turretImage: string,
+  dragons: { str: str }
+  turrets: { pos: [int, int], team: int},
+  player: CustomPlayerOptions,
+  hooks: HookEvents
+}</code></pre>
+    <p><b>backgroundImage</b>: required (url)<br />
+        <b>height</b>: required (in px)<br />
+        <b>turretImage</b>: required (if used, URL)<br />
+        <b>dragons</b>: required if used, key defines name, value is URL of image <br />
+        <b>turrets</b>: optional, custom turret locations and teams</p>
+
+    <h4>CustomPlayerOptions (optional)</h4>
+    <pre><code>{
+  autoplay: bool,
+  repeat: bool,
+  disabled: bool
+}</code></pre>
+    <p><b>autoplay</b>: optional<br />
+        <b>repeat</b>: optional<br />
+        <b>disabled</b>: optional</p>
+
+    <h4>HookEvents (optional)</h4>
+    <pre><code>{
+  onStartToggle: function,
+  onChampionClick: function,
+  onInitialization: function
+}</code></pre>
+    <p><b>onStartToggle</b>: no return<br />
+        <b>onChampionClick</b>: returns ChampionObject clicked<br />
+        <b>onInitialization</b>: no return</p>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</body>
+</html>

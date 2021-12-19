@@ -256,7 +256,7 @@ game.initialize();
 const customOptions = {
   backgroundImage: "https://2.bp.blogspot.com/--A1wNZhS868/U7L4xKhbQTI/AAAAAAAAS04/rfzak1JCZFY/s412/srdb3-1.jpg",
   height: 400,
-  turretImage: "http://assets.stickpng.com/images/58482d7fcef1014c0b5e4a5a.png",
+  turretImage: "https://icon-library.com/images/free-square-icon/free-square-icon-7.jpg",
   dragons: {
     mountain: "https://s3.cointelegraph.com/storage/uploads/view/bad02e8b57a64d349aa5eec318298b4b.png",
   },
@@ -309,11 +309,7 @@ const devOptions = {
   hooks: {
     onStartToggle: () => alert("Start toggle was called"),
     onChampionClick: (e) => alert("Champion was clicked: " + e.name),
-    onInitialization: (e) => console.log("Dev version loaded")
-  },
-  overrides: {
-    minimumPlaySpeed: 0.125,
-    maxPlaySpeed: 8
+    onInitialization: () => console.log("Dev version loaded")
   }
 }
 
